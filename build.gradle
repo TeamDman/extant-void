@@ -6,6 +6,45 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
+
+sourceSets {
+    main {
+        resources {
+            srcDirs += "src/generated/resources"
+        }
+    }
+    test {
+        compileClasspath += main.output
+    }
+    datagen {
+        compileClasspath += main.output
+    }
+    generated
+    gametest {
+        java {
+            srcDir "src/gametest/java"
+        }
+        compileClasspath += main.output
+        resources {
+            srcDirs += "src/gametest/resources"
+        }
+    }
+}
+configurations {
+    extendConfigurations(implementation, gametestImplementation, testImplementation, datagenImplementation)
+    extendConfigurations(compileOnly, gametestCompileOnly, testCompileOnly, datagenCompileOnly)
+    extendConfigurations(runtimeOnly, gametestRuntimeOnly, testRuntimeOnly, datagenRuntimeOnly)
+//    testImplementation.extendsFrom(minecraft)
+//    gametestImplementation.extendsFrom(minecraft)
+//    datagenImplementation.extendsFrom(minecraft)
+}
+
+static void extendConfigurations(Configuration base, Configuration... configurations) {
+    for (def configuration : configurations) {
+        configuration.extendsFrom(base)
+    }
+}
+
 version = mod_version
 group = mod_group_id
 
